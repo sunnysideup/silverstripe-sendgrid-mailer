@@ -1,5 +1,5 @@
 {
-    "name": "unclecheese/silverstripe-sendgrid-mailer",
+    "name": "sunnysideup/silverstripe-sendgrid-mailer",
     "description": "A drop-in mailer replacement for SendGrid",
     "type": "silverstripe-vendormodule",
     "homepage": "https://github.com/unclecheese/silverstripe-sendgrid-mailer",

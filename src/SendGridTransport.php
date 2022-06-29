@@ -1,6 +1,5 @@
 <?php
 
-
 namespace UncleCheese\SendGridMailer;
 
 use SendGrid;
@@ -12,9 +11,8 @@ use Swift_DependencyException;
 use Swift_Events_EventDispatcher;
 use Swift_Events_EventListener;
 use Swift_Events_SendEvent;
-use Swift_Transport;
 use Swift_Mime_SimpleMessage;
-
+use Swift_Transport;
 
 class SendGridTransport implements Swift_Transport
 {
@@ -35,8 +33,7 @@ class SendGridTransport implements Swift_Transport
 
     /**
      * SendgridTransport constructor.
-     * @param SendGrid $client
-     * @param null|Swift_Events_EventDispatcher $eventDispatcher
+     *
      * @throws Swift_DependencyException
      */
     public function __construct(SendGrid $client, ?Swift_Events_EventDispatcher $eventDispatcher = null)
@@ -45,6 +42,7 @@ class SendGridTransport implements Swift_Transport
         if (null === $eventDispatcher) {
             $eventDispatcher = Swift_DependencyContainer::getInstance()->lookup('transport.eventdispatcher');
         }
+
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -105,20 +103,18 @@ class SendGridTransport implements Swift_Transport
 
         if ($testAddress) {
             $email->addTo($testAddress);
-            $count++;
-        } else {
-            if ($to = $message->getTo()) {
-                foreach ($to as $address => $name) {
-                    $email->addTo($address, $name);
-                    $count++;
-                }
+            ++$count;
+        } elseif ($to = $message->getTo()) {
+            foreach ($to as $address => $name) {
+                $email->addTo($address, $name);
+                ++$count;
             }
         }
 
         if ($replyTo = $message->getReplyTo()) {
             $emails = array_keys($replyTo);
             $names = array_values($replyTo);
-            if (!empty($emails)) {
+            if (! empty($emails)) {
                 $email->setReplyTo($emails[0], $names[0] ?? null);
             }
         }
@@ -126,16 +122,17 @@ class SendGridTransport implements Swift_Transport
         if ($bcc = $message->getBcc()) {
             foreach ($bcc as $address => $name) {
                 $email->addBcc($address, $name);
-                $count++;
+                ++$count;
             }
         }
 
         if ($cc = $message->getCc()) {
             foreach ($cc as $address => $name) {
                 $email->addCc($address, $name);
-                $count++;
+                ++$count;
             }
         }
+
         $children = $message->getChildren();
         foreach ($children as $child) {
             if ($child instanceof Swift_Attachment) {
@@ -148,7 +145,6 @@ class SendGridTransport implements Swift_Transport
                 );
             }
         }
-
 
         $email->setSubject($message->getSubject());
         // "multipart/alternative" results in empty email bodies. No plain part
@@ -178,14 +174,13 @@ class SendGridTransport implements Swift_Transport
     }
 
     /**
-     * @param SendGridTransportException $e
      * @throws SendGridTransportException
      */
     private function throwException(SendGridTransportException $e)
     {
         if ($evt = $this->eventDispatcher->createTransportExceptionEvent($this, $e)) {
             $this->eventDispatcher->dispatchEvent($evt, 'exceptionThrown');
-            if (!$evt->bubbleCancelled()) {
+            if (! $evt->bubbleCancelled()) {
                 throw $e;
             }
         } else {

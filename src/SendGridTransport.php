@@ -163,6 +163,7 @@ class SendGridTransport implements Swift_Transport
         }
 
         $this->throwException(new SendGridTransportException($response->body(), $response->statusCode(), null, $response));
+        return 0;
     }
 
     /**

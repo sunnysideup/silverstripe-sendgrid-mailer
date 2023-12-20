@@ -1,5 +1,5 @@
 {
-    "name": "unclecheese/silverstripe-sendgrid-mailer",
+    "name": "sunnysideup/silverstripe-sendgrid-mailer",
     "description": "A drop-in mailer replacement for SendGrid",
     "type": "silverstripe-vendormodule",
     "homepage": "https://github.com/unclecheese/silverstripe-sendgrid-mailer",
@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": ">=7.2.0",
-        "silverstripe/framework": "^4 || ^5",
+        "silverstripe/framework": "^4.0 || ^5.0",
         "sendgrid/sendgrid": "^7.3"
     },
     "require-dev": {
